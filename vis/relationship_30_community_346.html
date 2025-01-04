@@ -1,0 +1,223 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+                <link href="lib/tom-select/tom-select.css" rel="stylesheet">
+                <script src="lib/tom-select/tom-select.complete.min.js"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 100vh;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+                <div id="select-menu" class="card-header" style="display:none">
+                    <div class="row no-gutters">
+                        <div class="col-10 pb-2">
+                            <select
+                            class="form-select"
+                            aria-label="Default select example"
+                            onchange="selectNode([value]);"
+                            id="select-node"
+                            placeholder="Select node..."
+                            >
+                                <option selected>Select a Node by ID</option>
+                                
+                                    <option value="4132">4132</option>
+                                
+                                    <option value="4133">4133</option>
+                                
+                                    <option value="4134">4134</option>
+                                
+                                    <option value="4135">4135</option>
+                                
+                                    <option value="4136">4136</option>
+                                
+                                    <option value="4137">4137</option>
+                                
+                                    <option value="4138">4138</option>
+                                
+                                    <option value="4139">4139</option>
+                                
+                                    <option value="4140">4140</option>
+                                
+                                    <option value="4141">4141</option>
+                                
+                                    <option value="4142">4142</option>
+                                
+                            </select>
+                        </div>
+                        <div class="col-2 pb-2">
+                            <button type="button" class="btn btn-primary btn-block" onclick="neighbourhoodHighlight({nodes: []});">Reset Selection</button>
+                        </div>
+                    </div>
+                </div>
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+                  new TomSelect("#select-node",{
+                      create: false,
+                      sortField: {
+                          field: "text",
+                          direction: "asc"
+                      }
+                  });
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#53ab71", "customUrl": "https://pacviewer.com/address/pc1za7e5z8x5vsn2uxje9034qglljrcl80se7l58ml", "id": 4132, "label": "pc1za7e5z8x5vsn2uxje9034qglljrcl80se7l58ml", "shape": "dot", "title": "pc1za7e5z8x5vsn2uxje9034qglljrcl80se7l58ml", "x": 298.42211175210673, "y": 2000.0}, {"color": "#53ab71", "customUrl": "https://pacviewer.com/address/pc1p0guehdupkdavqjpv8p6awpd6u9dfe0lpah5ef4", "id": 4133, "label": "pc1p0guehdupkdavqjpv8p6awpd6u9dfe0lpah5ef4", "shape": "square", "title": "pc1p0guehdupkdavqjpv8p6awpd6u9dfe0lpah5ef4", "x": 1942.1857996641731, "y": 440.3417577046092}, {"color": "#53ab71", "customUrl": "https://pacviewer.com/address/pc1p4p7x9wawzjlsc8hut7vzgaht03vvnq9aqjg4t5", "id": 4134, "label": "pc1p4p7x9wawzjlsc8hut7vzgaht03vvnq9aqjg4t5", "shape": "square", "title": "pc1p4p7x9wawzjlsc8hut7vzgaht03vvnq9aqjg4t5", "x": -982.8044443864692, "y": -1717.534233709489}, {"color": "#53ab71", "customUrl": "https://pacviewer.com/address/pc1p8szxfnrh7zytn7pg7tv4v5wq28t75m6kclhjgz", "id": 4135, "label": "pc1p8szxfnrh7zytn7pg7tv4v5wq28t75m6kclhjgz", "shape": "square", "title": "pc1p8szxfnrh7zytn7pg7tv4v5wq28t75m6kclhjgz", "x": -1687.9848661918218, "y": 1025.5814188962543}, {"color": "#53ab71", "customUrl": "https://pacviewer.com/address/pc1pgud78m56f4hpw7zm388zj38nseu09phc27ppuq", "id": 4136, "label": "pc1pgud78m56f4hpw7zm388zj38nseu09phc27ppuq", "shape": "square", "title": "pc1pgud78m56f4hpw7zm388zj38nseu09phc27ppuq", "x": 1310.688842064246, "y": 1412.9623390126824}, {"color": "#53ab71", "customUrl": "https://pacviewer.com/address/pc1phgm6jqxnskfaudu7wkhfu8qagcayf38kpqkh9s", "id": 4137, "label": "pc1phgm6jqxnskfaudu7wkhfu8qagcayf38kpqkh9s", "shape": "square", "title": "pc1phgm6jqxnskfaudu7wkhfu8qagcayf38kpqkh9s", "x": -949.4274117624134, "y": 1879.5738206869964}, {"color": "#53ab71", "customUrl": "https://pacviewer.com/address/pc1pkfn4c8ezz3xeu08t8su6v20d9hy6t4qcy4ctrh", "id": 4138, "label": "pc1pkfn4c8ezz3xeu08t8su6v20d9hy6t4qcy4ctrh", "shape": "square", "title": "pc1pkfn4c8ezz3xeu08t8su6v20d9hy6t4qcy4ctrh", "x": 1969.9063197678427, "y": -778.1457027948462}, {"color": "#53ab71", "customUrl": "https://pacviewer.com/address/pc1pkpjpd2lkv5ugfdl2e9xtv4fy09wzpcd2a9f5ju", "id": 4139, "label": "pc1pkpjpd2lkv5ugfdl2e9xtv4fy09wzpcd2a9f5ju", "shape": "square", "title": "pc1pkpjpd2lkv5ugfdl2e9xtv4fy09wzpcd2a9f5ju", "x": -1540.0031571783738, "y": -874.4579586436552}, {"color": "#53ab71", "customUrl": "https://pacviewer.com/address/pc1psxjtxs0lpeu9wgs3u7waznv25vmd35qyhylnsw", "id": 4140, "label": "pc1psxjtxs0lpeu9wgs3u7waznv25vmd35qyhylnsw", "shape": "square", "title": "pc1psxjtxs0lpeu9wgs3u7waznv25vmd35qyhylnsw", "x": -1683.679859304548, "y": 98.1944974026451}, {"color": "#53ab71", "customUrl": "https://pacviewer.com/address/pc1p8k0c6n0gu4pmvha8nmh3nn2cmceshwcupx2e6s", "id": 4141, "label": "pc1p8k0c6n0gu4pmvha8nmh3nn2cmceshwcupx2e6s", "shape": "square", "title": "pc1p8k0c6n0gu4pmvha8nmh3nn2cmceshwcupx2e6s", "x": 139.00946150358604, "y": -1835.3974911907842}, {"color": "#53ab71", "customUrl": "https://pacviewer.com/address/pc1pva7kqsmv6my9vcxkjjwrgx4kn9m3twlkkhw7vg", "id": 4142, "label": "pc1pva7kqsmv6my9vcxkjjwrgx4kn9m3twlkkhw7vg", "shape": "square", "title": "pc1pva7kqsmv6my9vcxkjjwrgx4kn9m3twlkkhw7vg", "x": 1183.6872040716707, "y": -1651.1184473644125}]);
+                  edges = new vis.DataSet([{"from": 4132, "label": "41.01", "to": 4133, "value": 41.01}, {"from": 4132, "label": "109.04", "to": 4134, "value": 109.04}, {"from": 4132, "label": "26.0", "to": 4135, "value": 26.0}, {"from": 4132, "label": "25.01", "to": 4136, "value": 25.01}, {"from": 4132, "label": "131.03", "to": 4137, "value": 131.03}, {"from": 4132, "label": "31.0", "to": 4138, "value": 31.0}, {"from": 4132, "label": "52.0", "to": 4139, "value": 52.0}, {"from": 4132, "label": "20.0", "to": 4140, "value": 20.0}, {"from": 4132, "label": "16.0", "to": 4141, "value": 16.0}, {"from": 4132, "label": "12.0", "to": 4142, "value": 12.0}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {"interaction": {"multiselect": true, "selectable": true, "dragView": true, "dragNodes": true, "selectConnectedEdges": true, "hover": true, "hoverConnectedEdges": true}, "physics": {"enabled": false, "stabilization": {"enabled": true, "fit": true}}, "edges": {"smooth": {"type": "continuous"}, "color": {"opacity": 1.0}}, "nodes": {"opacity": 1, "scaling": {"min": 20, "max": 30}, "color": {"background": "#97C2FC", "border": "#2B7CE9", "highlight": {"background": "#D2E5FF", "border": "#2B7CE9"}}}, "configure": {"enabled": false}};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+    network.on("doubleClick", function(params) {
+        if (params.nodes.length > 0) {
+            const nodeId = params.nodes[0];
+            const node = network.body.data.nodes.get(nodeId);
+            if (node.customUrl) {
+                window.open(node.customUrl, '_blank');
+            }
+        }
+    });
+
+    function selectNodeByAddress() {
+        let address = window.location.hash.substring(1).toLowerCase();
+        if(address) {
+            let nodes = network.body.data.nodes.get();
+            let targetNode = nodes.find(node => 
+                node.title && node.title.toLowerCase() === address
+            );
+            
+            if(targetNode) {
+                network.selectNodes([targetNode.id]);
+                network.focus(targetNode.id, {
+                    scale: 1.0,
+                    animation: true
+                });
+            }
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(selectNodeByAddress, 1000);
+    });
+
+    window.addEventListener('hashchange', function() {
+        selectNodeByAddress();
+    });
+    
+    var style = document.createElement('style');
+    style.textContent = '#select-menu { display: none !important; }';
+    document.head.appendChild(style);
+
+
+                  
+
+                  
+                    network.on("selectNode", neighbourhoodHighlight);
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>

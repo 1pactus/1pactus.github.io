@@ -1,0 +1,225 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+                <link href="lib/tom-select/tom-select.css" rel="stylesheet">
+                <script src="lib/tom-select/tom-select.complete.min.js"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 100vh;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+                <div id="select-menu" class="card-header" style="display:none">
+                    <div class="row no-gutters">
+                        <div class="col-10 pb-2">
+                            <select
+                            class="form-select"
+                            aria-label="Default select example"
+                            onchange="selectNode([value]);"
+                            id="select-node"
+                            placeholder="Select node..."
+                            >
+                                <option selected>Select a Node by ID</option>
+                                
+                                    <option value="4293">4293</option>
+                                
+                                    <option value="4105">4105</option>
+                                
+                                    <option value="4084">4084</option>
+                                
+                                    <option value="4085">4085</option>
+                                
+                                    <option value="4086">4086</option>
+                                
+                                    <option value="4087">4087</option>
+                                
+                                    <option value="4088">4088</option>
+                                
+                                    <option value="4089">4089</option>
+                                
+                                    <option value="4090">4090</option>
+                                
+                                    <option value="4091">4091</option>
+                                
+                                    <option value="4318">4318</option>
+                                
+                                    <option value="4286">4286</option>
+                                
+                            </select>
+                        </div>
+                        <div class="col-2 pb-2">
+                            <button type="button" class="btn btn-primary btn-block" onclick="neighbourhoodHighlight({nodes: []});">Reset Selection</button>
+                        </div>
+                    </div>
+                </div>
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+                  new TomSelect("#select-node",{
+                      create: false,
+                      sortField: {
+                          field: "text",
+                          direction: "asc"
+                      }
+                  });
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#af5bc1", "customUrl": "https://pacviewer.com/address/pc1zudlrh8c86yjg9e3twa3xnrysu7j6dmlrdme93x", "id": 4293, "label": "pc1zudlrh8c86yjg9e3twa3xnrysu7j6dmlrdme93x", "shape": "dot", "title": "pc1zudlrh8c86yjg9e3twa3xnrysu7j6dmlrdme93x", "x": -4484.059490956439, "y": 3820.5617552648896}, {"color": "#af5bc1", "customUrl": "https://pacviewer.com/address/pc1z65x32vk6emj5kk3khhguraeqzzfhghxl8t5fpc", "id": 4105, "label": "pc1z65x32vk6emj5kk3khhguraeqzzfhghxl8t5fpc", "shape": "dot", "title": "pc1z65x32vk6emj5kk3khhguraeqzzfhghxl8t5fpc", "x": 4399.49520602201, "y": 4275.194744897146}, {"color": "#af5bc1", "customUrl": "https://pacviewer.com/address/pc1z3p69kuq6ruk3lg7mthsq4waxjltahhvjm5gnuu", "id": 4084, "label": "pc1z3p69kuq6ruk3lg7mthsq4waxjltahhvjm5gnuu", "shape": "dot", "title": "pc1z3p69kuq6ruk3lg7mthsq4waxjltahhvjm5gnuu", "x": 99.27712130999078, "y": -8.342494084804319}, {"color": "#af5bc1", "customUrl": "https://pacviewer.com/address/pc1p6dy7u6u4pk0mldq7we9g8r8hzmy4spauafwjs5", "id": 4085, "label": "pc1p6dy7u6u4pk0mldq7we9g8r8hzmy4spauafwjs5", "shape": "square", "title": "pc1p6dy7u6u4pk0mldq7we9g8r8hzmy4spauafwjs5", "x": 2564.460627676295, "y": 2452.7306254359437}, {"color": "#af5bc1", "customUrl": "https://pacviewer.com/address/pc1p86rwnsdzef7pxx2ma3rusujuatvu4pakl37v6x", "id": 4086, "label": "pc1p86rwnsdzef7pxx2ma3rusujuatvu4pakl37v6x", "shape": "square", "title": "pc1p86rwnsdzef7pxx2ma3rusujuatvu4pakl37v6x", "x": 2398.5040058536347, "y": -174.13645304916307}, {"color": "#af5bc1", "customUrl": "https://pacviewer.com/address/pc1p89ts645kg2ra4pnlfxh7l6va6887h02dg48m65", "id": 4087, "label": "pc1p89ts645kg2ra4pnlfxh7l6va6887h02dg48m65", "shape": "square", "title": "pc1p89ts645kg2ra4pnlfxh7l6va6887h02dg48m65", "x": -85.38691055043621, "y": 2231.8153518041204}, {"color": "#af5bc1", "customUrl": "https://pacviewer.com/address/pc1pqfdkf7dnzsyk77ugmayz60jewynl68hhjfy4qd", "id": 4088, "label": "pc1pqfdkf7dnzsyk77ugmayz60jewynl68hhjfy4qd", "shape": "square", "title": "pc1pqfdkf7dnzsyk77ugmayz60jewynl68hhjfy4qd", "x": 2180.7316709989677, "y": -2798.3664070639206}, {"color": "#af5bc1", "customUrl": "https://pacviewer.com/address/pc1pz0r8ux5t0rpnnsggv7ts5jfndvn67w7w86fvaj", "id": 4089, "label": "pc1pz0r8ux5t0rpnnsggv7ts5jfndvn67w7w86fvaj", "shape": "square", "title": "pc1pz0r8ux5t0rpnnsggv7ts5jfndvn67w7w86fvaj", "x": -2553.303039484023, "y": 2125.235761727679}, {"color": "#af5bc1", "customUrl": "https://pacviewer.com/address/pc1p8g4aya3sznwf2rfsp22uv566mf7zakcpkuv87v", "id": 4090, "label": "pc1p8g4aya3sznwf2rfsp22uv566mf7zakcpkuv87v", "shape": "square", "title": "pc1p8g4aya3sznwf2rfsp22uv566mf7zakcpkuv87v", "x": -2838.031519002877, "y": -1732.3410810512937}, {"color": "#af5bc1", "customUrl": "https://pacviewer.com/address/pc1phm0pakxnjp20gsx28htfsl98kxkvkfy7044u8n", "id": 4091, "label": "pc1phm0pakxnjp20gsx28htfsl98kxkvkfy7044u8n", "shape": "square", "title": "pc1phm0pakxnjp20gsx28htfsl98kxkvkfy7044u8n", "x": -412.81047859340185, "y": -2200.7849317072796}, {"color": "#af5bc1", "customUrl": "https://pacviewer.com/address/pc1zw5r02vmhw5d9suvtqqzp9taqgfv0mfg43jxr86", "id": 4318, "label": "pc1zw5r02vmhw5d9suvtqqzp9taqgfv0mfg43jxr86", "shape": "dot", "title": "pc1zw5r02vmhw5d9suvtqqzp9taqgfv0mfg43jxr86", "x": 3731.122806726275, "y": -4864.193256114938}, {"color": "#af5bc1", "customUrl": "https://pacviewer.com/address/pc1zsjxap8pjlgrvvtv2nfu60pc0y9aqkcl937vc8p", "id": 4286, "label": "pc1zsjxap8pjlgrvvtv2nfu60pc0y9aqkcl937vc8p", "shape": "dot", "title": "pc1zsjxap8pjlgrvvtv2nfu60pc0y9aqkcl937vc8p", "x": -5000.0, "y": -3127.3736160583794}]);
+                  edges = new vis.DataSet([{"from": 4293, "label": "6.0", "to": 4089, "value": 6.0}, {"from": 4105, "label": "3.0", "to": 4085, "value": 3.0}, {"from": 4084, "label": "105.01", "to": 4085, "value": 105.01}, {"from": 4084, "label": "118.02", "to": 4086, "value": 118.02}, {"from": 4084, "label": "97.01", "to": 4087, "value": 97.01}, {"from": 4084, "label": "92.02", "to": 4088, "value": 92.02}, {"from": 4084, "label": "112.01", "to": 4089, "value": 112.01}, {"from": 4084, "label": "102.02", "to": 4090, "value": 102.02}, {"from": 4084, "label": "100.02", "to": 4091, "value": 100.02}, {"from": 4088, "label": "3.0", "to": 4318, "value": 3.0}, {"from": 4090, "label": "1.0", "to": 4286, "value": 1.0}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {"interaction": {"multiselect": true, "selectable": true, "dragView": true, "dragNodes": true, "selectConnectedEdges": true, "hover": true, "hoverConnectedEdges": true}, "physics": {"enabled": false, "stabilization": {"enabled": true, "fit": true}}, "edges": {"smooth": {"type": "continuous"}, "color": {"opacity": 1.0}}, "nodes": {"opacity": 1, "scaling": {"min": 20, "max": 30}, "color": {"background": "#97C2FC", "border": "#2B7CE9", "highlight": {"background": "#D2E5FF", "border": "#2B7CE9"}}}, "configure": {"enabled": false}};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+    network.on("doubleClick", function(params) {
+        if (params.nodes.length > 0) {
+            const nodeId = params.nodes[0];
+            const node = network.body.data.nodes.get(nodeId);
+            if (node.customUrl) {
+                window.open(node.customUrl, '_blank');
+            }
+        }
+    });
+
+    function selectNodeByAddress() {
+        let address = window.location.hash.substring(1).toLowerCase();
+        if(address) {
+            let nodes = network.body.data.nodes.get();
+            let targetNode = nodes.find(node => 
+                node.title && node.title.toLowerCase() === address
+            );
+            
+            if(targetNode) {
+                network.selectNodes([targetNode.id]);
+                network.focus(targetNode.id, {
+                    scale: 1.0,
+                    animation: true
+                });
+            }
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(selectNodeByAddress, 1000);
+    });
+
+    window.addEventListener('hashchange', function() {
+        selectNodeByAddress();
+    });
+    
+    var style = document.createElement('style');
+    style.textContent = '#select-menu { display: none !important; }';
+    document.head.appendChild(style);
+
+
+                  
+
+                  
+                    network.on("selectNode", neighbourhoodHighlight);
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>
