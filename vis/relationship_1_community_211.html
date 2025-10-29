@@ -1,0 +1,188 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 100vh;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#f4c00c", "customUrl": "https://pacviewer.com/address/pc1zkdlg0e3p5fx4nw9aqcwuhuxjxg8yxljm5euv8e", "id": 3024, "label": "pc1zkdlg0e3p5fx4nw9aqcwuhuxjxg8yxljm5euv8e", "shape": "dot", "title": "pc1zkdlg0e3p5fx4nw9aqcwuhuxjxg8yxljm5euv8e", "x": 0.5710038647841978, "y": -3.982639907293034}, {"color": "#f4c00c", "customUrl": "https://pacviewer.com/address/pc1p349hw77wxfa6fecj4rvcsh98nc4aksmtkyh7vh", "id": 3025, "label": "pc1p349hw77wxfa6fecj4rvcsh98nc4aksmtkyh7vh", "shape": "square", "title": "pc1p349hw77wxfa6fecj4rvcsh98nc4aksmtkyh7vh", "x": 4360.69369932532, "y": 1805.727387650458}, {"color": "#f4c00c", "customUrl": "https://pacviewer.com/address/pc1p59yx9l5saqt9cm2a0z3uqqfl6nz3edfdnm7wfd", "id": 3026, "label": "pc1p59yx9l5saqt9cm2a0z3uqqfl6nz3edfdnm7wfd", "shape": "square", "title": "pc1p59yx9l5saqt9cm2a0z3uqqfl6nz3edfdnm7wfd", "x": -2997.738559351466, "y": -3635.0860562505745}, {"color": "#f4c00c", "customUrl": "https://pacviewer.com/address/pc1p5wffkgv67xmz9yc46j5kpqz4qlhga0xxkwzkxc", "id": 3027, "label": "pc1p5wffkgv67xmz9yc46j5kpqz4qlhga0xxkwzkxc", "shape": "square", "title": "pc1p5wffkgv67xmz9yc46j5kpqz4qlhga0xxkwzkxc", "x": -4266.348892379231, "y": 2063.1470184977957}, {"color": "#f4c00c", "customUrl": "https://pacviewer.com/address/pc1p79j3pnfqxkehhn29fzda4kecgyp82wjzuh7e3y", "id": 3028, "label": "pc1p79j3pnfqxkehhn29fzda4kecgyp82wjzuh7e3y", "shape": "square", "title": "pc1p79j3pnfqxkehhn29fzda4kecgyp82wjzuh7e3y", "x": 1709.213783701002, "y": 2705.8321135780807}, {"color": "#f4c00c", "customUrl": "https://pacviewer.com/address/pc1pc7fjv6hf92ra7r3n4937m9pru4exhlg6hc2hxl", "id": 3029, "label": "pc1pc7fjv6hf92ra7r3n4937m9pru4exhlg6hc2hxl", "shape": "square", "title": "pc1pc7fjv6hf92ra7r3n4937m9pru4exhlg6hc2hxl", "x": -3207.4739271527337, "y": 3935.07961380998}, {"color": "#f4c00c", "customUrl": "https://pacviewer.com/address/pc1pcsgz0w2sr0mrw9x40nm2v24nq45dnplsre4r4a", "id": 3030, "label": "pc1pcsgz0w2sr0mrw9x40nm2v24nq45dnplsre4r4a", "shape": "square", "title": "pc1pcsgz0w2sr0mrw9x40nm2v24nq45dnplsre4r4a", "x": 4358.085246308891, "y": -2480.7712980223178}, {"color": "#f4c00c", "customUrl": "https://pacviewer.com/address/pc1pgdu03t7myqe5yy5zt3vj7m6vhuwvk5eq9dhyka", "id": 3031, "label": "pc1pgdu03t7myqe5yy5zt3vj7m6vhuwvk5eq9dhyka", "shape": "square", "title": "pc1pgdu03t7myqe5yy5zt3vj7m6vhuwvk5eq9dhyka", "x": -4501.228186057795, "y": -2239.539007224101}, {"color": "#f4c00c", "customUrl": "https://pacviewer.com/address/pc1pj43dsjdyg36h986kfeaccsyw5yv65th2hug53x", "id": 3032, "label": "pc1pj43dsjdyg36h986kfeaccsyw5yv65th2hug53x", "shape": "square", "title": "pc1pj43dsjdyg36h986kfeaccsyw5yv65th2hug53x", "x": -1641.8899898363868, "y": 2721.21701792708}, {"color": "#f4c00c", "customUrl": "https://pacviewer.com/address/pc1pp2uwsd73rjgepd9h2x6f99w2hweeeswse28kr6", "id": 3033, "label": "pc1pp2uwsd73rjgepd9h2x6f99w2hweeeswse28kr6", "shape": "square", "title": "pc1pp2uwsd73rjgepd9h2x6f99w2hweeeswse28kr6", "x": -60.59073683291364, "y": -3134.164239261279}, {"color": "#f4c00c", "customUrl": "https://pacviewer.com/address/pc1ppnhz8rw44d9vk8ve8tx72pgj2hd599mjmr22vq", "id": 3034, "label": "pc1ppnhz8rw44d9vk8ve8tx72pgj2hd599mjmr22vq", "shape": "square", "title": "pc1ppnhz8rw44d9vk8ve8tx72pgj2hd599mjmr22vq", "x": 2795.7078712151806, "y": -3787.0307433294165}, {"color": "#f4c00c", "customUrl": "https://pacviewer.com/address/pc1ps5qsykpfszamj63qua0zhyur6x0htaysjkquy9", "id": 3035, "label": "pc1ps5qsykpfszamj63qua0zhyur6x0htaysjkquy9", "shape": "square", "title": "pc1ps5qsykpfszamj63qua0zhyur6x0htaysjkquy9", "x": -3053.6305563554733, "y": -744.2511821427503}, {"color": "#f4c00c", "customUrl": "https://pacviewer.com/address/pc1pt5hwcnhjzlygkph5feqrx7azju8skrqmud80vv", "id": 3036, "label": "pc1pt5hwcnhjzlygkph5feqrx7azju8skrqmud80vv", "shape": "square", "title": "pc1pt5hwcnhjzlygkph5feqrx7azju8skrqmud80vv", "x": 1202.4184717459782, "y": 4806.196278394203}, {"color": "#f4c00c", "customUrl": "https://pacviewer.com/address/pc1pudf0zzgecw4a5fl92kf9dq6qmwmjfpswu80964", "id": 3037, "label": "pc1pudf0zzgecw4a5fl92kf9dq6qmwmjfpswu80964", "shape": "square", "title": "pc1pudf0zzgecw4a5fl92kf9dq6qmwmjfpswu80964", "x": -4985.371180544444, "y": 162.5688884440829}, {"color": "#f4c00c", "customUrl": "https://pacviewer.com/address/pc1pvthkldr0e5ecs9gvglmgs24aprp07vlysgdax3", "id": 3038, "label": "pc1pvthkldr0e5ecs9gvglmgs24aprp07vlysgdax3", "shape": "square", "title": "pc1pvthkldr0e5ecs9gvglmgs24aprp07vlysgdax3", "x": 1087.4081576258604, "y": -4897.617687178637}, {"color": "#f4c00c", "customUrl": "https://pacviewer.com/address/pc1pvucu93pw46prcsm0umwcfxxh0jyv47ksylepx3", "id": 3039, "label": "pc1pvucu93pw46prcsm0umwcfxxh0jyv47ksylepx3", "shape": "square", "title": "pc1pvucu93pw46prcsm0umwcfxxh0jyv47ksylepx3", "x": 3011.677954913928, "y": -860.9718981711621}, {"color": "#f4c00c", "customUrl": "https://pacviewer.com/address/pc1pwfttu2yma7yrj9vw8hrnv6na3u6737g3qjcccc", "id": 3040, "label": "pc1pwfttu2yma7yrj9vw8hrnv6na3u6737g3qjcccc", "shape": "square", "title": "pc1pwfttu2yma7yrj9vw8hrnv6na3u6737g3qjcccc", "x": -908.6383215886949, "y": 4830.091942396647}, {"color": "#f4c00c", "customUrl": "https://pacviewer.com/address/pc1px6sk3xevf8cvq9hl4xpkpjv67250lzm56whdnt", "id": 3041, "label": "pc1px6sk3xevf8cvq9hl4xpkpjv67250lzm56whdnt", "shape": "square", "title": "pc1px6sk3xevf8cvq9hl4xpkpjv67250lzm56whdnt", "x": 3451.5743386084855, "y": 3701.4703397351013}, {"color": "#f4c00c", "customUrl": "https://pacviewer.com/address/pc1pyedv29ygrnsfldyk8jkmp0r24p23q6ql77f730", "id": 3042, "label": "pc1pyedv29ygrnsfldyk8jkmp0r24p23q6ql77f730", "shape": "square", "title": "pc1pyedv29ygrnsfldyk8jkmp0r24p23q6ql77f730", "x": -1354.4401772102922, "y": -4821.519116501862}, {"color": "#f4c00c", "customUrl": "https://pacviewer.com/address/pc1pzwuw026w2fsuf40dnz77crrpkl3aw0c434yywf", "id": 3043, "label": "pc1pzwuw026w2fsuf40dnz77crrpkl3aw0c434yywf", "shape": "square", "title": "pc1pzwuw026w2fsuf40dnz77crrpkl3aw0c434yywf", "x": 5000.0, "y": -126.39673244403043}]);
+                  edges = new vis.DataSet([{"color": "#f4c00c", "from": 3024, "label": "2.1", "to": 3025, "value": 2.1}, {"color": "#f4c00c", "from": 3024, "label": "2.8", "to": 3026, "value": 2.8}, {"color": "#f4c00c", "from": 3024, "label": "2.8", "to": 3027, "value": 2.8}, {"color": "#f4c00c", "from": 3024, "label": "2.8", "to": 3028, "value": 2.8}, {"color": "#f4c00c", "from": 3024, "label": "0.7", "to": 3029, "value": 0.7}, {"color": "#f4c00c", "from": 3024, "label": "0.7", "to": 3030, "value": 0.7}, {"color": "#f4c00c", "from": 3024, "label": "0.7", "to": 3031, "value": 0.7}, {"color": "#f4c00c", "from": 3024, "label": "0.7", "to": 3032, "value": 0.7}, {"color": "#f4c00c", "from": 3024, "label": "0.7", "to": 3033, "value": 0.7}, {"color": "#f4c00c", "from": 3024, "label": "2.1", "to": 3034, "value": 2.1}, {"color": "#f4c00c", "from": 3024, "label": "4.2", "to": 3035, "value": 4.2}, {"color": "#f4c00c", "from": 3024, "label": "2.1", "to": 3036, "value": 2.1}, {"color": "#f4c00c", "from": 3024, "label": "1.4", "to": 3037, "value": 1.4}, {"color": "#f4c00c", "from": 3024, "label": "0.7", "to": 3038, "value": 0.7}, {"color": "#f4c00c", "from": 3024, "label": "1.4", "to": 3039, "value": 1.4}, {"color": "#f4c00c", "from": 3024, "label": "1.4", "to": 3040, "value": 1.4}, {"color": "#f4c00c", "from": 3024, "label": "0.7", "to": 3041, "value": 0.7}, {"color": "#f4c00c", "from": 3024, "label": "0.7", "to": 3042, "value": 0.7}, {"color": "#f4c00c", "from": 3024, "label": "1.4", "to": 3043, "value": 1.4}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {"interaction": {"multiselect": true, "selectable": true, "dragView": true, "dragNodes": true, "selectConnectedEdges": true, "hover": true, "hoverConnectedEdges": true}, "physics": {"enabled": false, "stabilization": {"enabled": true, "fit": true}}, "edges": {"smooth": {"type": "continuous"}, "color": {"opacity": 1.0}}, "nodes": {"opacity": 1, "scaling": {"min": 20, "max": 30}, "color": {"background": "#97C2FC", "border": "#2B7CE9", "highlight": {"background": "#D2E5FF", "border": "#2B7CE9"}}}, "configure": {"enabled": false}};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+    network.on("doubleClick", function(params) {
+        if (params.nodes.length > 0) {
+            const nodeId = params.nodes[0];
+            const node = network.body.data.nodes.get(nodeId);
+            if (node.customUrl) {
+                window.open(node.customUrl, '_blank');
+            }
+        }
+    });
+
+    network.on("oncontext", function(params) {
+        params.event.preventDefault();
+        const nodeId = network.getNodeAt(params.pointer.DOM);
+        if (nodeId) {
+            const node = network.body.data.nodes.get(nodeId);
+            if (node.customUrl) {
+                window.open(node.customUrl, '_blank');
+            }
+        }
+    });
+
+    network.on("click", function(params) {
+        if (params.nodes.length > 0) {
+            const nodeId = params.nodes[0];
+            selectNode([nodeId]);
+        } else if (params.nodes.length === 0) {
+            neighbourhoodHighlight({nodes: []});
+        }
+    });
+
+    function selectNodeByAddress() {
+        let address = window.location.hash.substring(1).toLowerCase();
+        if(address) {
+            let nodes = network.body.data.nodes.get();
+            let targetNode = nodes.find(node => 
+                node.title && node.title.toLowerCase() === address
+            );
+            
+            if(targetNode) {
+                network.selectNodes([targetNode.id]);
+                network.focus(targetNode.id, {
+                    scale: 1.0,
+                    animation: true
+                });
+            }
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(selectNodeByAddress, 1000);
+    });
+
+    window.addEventListener('hashchange', function() {
+        selectNodeByAddress();
+    });
+    
+    var style = document.createElement('style');
+    style.textContent = '#select-menu { display: none !important; }';
+    document.head.appendChild(style);
+
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>
