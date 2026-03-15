@@ -1,0 +1,188 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 100vh;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#55c3a6", "customUrl": "https://pacviewer.com/address/pc1py784f0ey7l63ensnm4f8ftc2sqgqvdcndrl6vg", "id": 6329, "label": "pc1py784f0ey7l63ensnm4f8ftc2sqgqvdcndrl6vg", "shape": "square", "title": "pc1py784f0ey7l63ensnm4f8ftc2sqgqvdcndrl6vg", "x": -1454.5011041966945, "y": 5000.0}, {"color": "#55c3a6", "customUrl": "https://pacviewer.com/address/pc1pp4ua282sn796s2dv83g2smka6jz4x9c37h5vst", "id": 6327, "label": "pc1pp4ua282sn796s2dv83g2smka6jz4x9c37h5vst", "shape": "square", "title": "pc1pp4ua282sn796s2dv83g2smka6jz4x9c37h5vst", "x": 527.727972304556, "y": 3438.0905579038244}, {"color": "#55c3a6", "customUrl": "https://pacviewer.com/address/pc1zf3n836c33w62ayps3ueq4yy2tx22nmqetutvut", "id": 4728, "label": "pc1zf3n836c33w62ayps3ueq4yy2tx22nmqetutvut", "shape": "dot", "title": "pc1zf3n836c33w62ayps3ueq4yy2tx22nmqetutvut", "x": -1381.689578927874, "y": 2412.0414319377137}, {"color": "#55c3a6", "customUrl": "https://pacviewer.com/address/pc1reqku3w7r65as5ad7k24exv0k09mmw2ydmhs75p", "id": 1776, "label": "pc1reqku3w7r65as5ad7k24exv0k09mmw2ydmhs75p", "shape": "dot", "title": "pc1reqku3w7r65as5ad7k24exv0k09mmw2ydmhs75p", "x": 1136.1711987123144, "y": -1982.3063862243189}, {"color": "#55c3a6", "customUrl": "https://pacviewer.com/address/pc1pmuncw3725852qyjtdknf7uk2g4u2k5t5qtlxyu", "id": 1777, "label": "pc1pmuncw3725852qyjtdknf7uk2g4u2k5t5qtlxyu", "shape": "square", "title": "pc1pmuncw3725852qyjtdknf7uk2g4u2k5t5qtlxyu", "x": 3467.3901212199016, "y": -964.4959501137577}, {"color": "#55c3a6", "customUrl": "https://pacviewer.com/address/pc1p0esws73pnxhaa6mpn85e7yjh54hhxr38sfm50l", "id": 6322, "label": "pc1p0esws73pnxhaa6mpn85e7yjh54hhxr38sfm50l", "shape": "square", "title": "pc1p0esws73pnxhaa6mpn85e7yjh54hhxr38sfm50l", "x": -3582.005428471503, "y": 3767.45698700831}, {"color": "#55c3a6", "customUrl": "https://pacviewer.com/address/pc1pnp22a2e6u9agtwnhg7kkapgh2tmkchxz3mr8yl", "id": 1779, "label": "pc1pnp22a2e6u9agtwnhg7kkapgh2tmkchxz3mr8yl", "shape": "square", "title": "pc1pnp22a2e6u9agtwnhg7kkapgh2tmkchxz3mr8yl", "x": 3343.924138259088, "y": -3443.759570420571}, {"color": "#55c3a6", "customUrl": "https://pacviewer.com/address/pc1pqg42ln3awjrehv620x9j8yufa5vaw4smhvlcjv", "id": 1780, "label": "pc1pqg42ln3awjrehv620x9j8yufa5vaw4smhvlcjv", "shape": "square", "title": "pc1pqg42ln3awjrehv620x9j8yufa5vaw4smhvlcjv", "x": -912.8911319801757, "y": -3487.8584290009526}, {"color": "#55c3a6", "customUrl": "https://pacviewer.com/address/pc1ps4pgzpstqtcc2zdd0ucc2y5s5prn6a3qy8d43s", "id": 1781, "label": "pc1ps4pgzpstqtcc2zdd0ucc2y5s5prn6a3qy8d43s", "shape": "square", "title": "pc1ps4pgzpstqtcc2zdd0ucc2y5s5prn6a3qy8d43s", "x": -831.825879294094, "y": -2006.3523570211034}, {"color": "#55c3a6", "customUrl": "https://pacviewer.com/address/pc1p4ny67myte0fuej7pkvjfx6hwj40m02ujjdensu", "id": 6323, "label": "pc1p4ny67myte0fuej7pkvjfx6hwj40m02ujjdensu", "shape": "square", "title": "pc1p4ny67myte0fuej7pkvjfx6hwj40m02ujjdensu", "x": -3217.475642117688, "y": 1278.5841269716964}, {"color": "#55c3a6", "customUrl": "https://pacviewer.com/address/pc1pxze5y2x76arylj87upw0p0pp9fm5qmtgscljl8", "id": 1783, "label": "pc1pxze5y2x76arylj87upw0p0pp9fm5qmtgscljl8", "shape": "square", "title": "pc1pxze5y2x76arylj87upw0p0pp9fm5qmtgscljl8", "x": 2471.4244741656003, "y": -4300.196439450694}, {"color": "#55c3a6", "customUrl": "https://pacviewer.com/address/pc1pt8sdzv38ugm4qc2seqg8we6aj97ddray62a3tj", "id": 1784, "label": "pc1pt8sdzv38ugm4qc2seqg8we6aj97ddray62a3tj", "shape": "square", "title": "pc1pt8sdzv38ugm4qc2seqg8we6aj97ddray62a3tj", "x": 70.70076432679929, "y": -4375.640308515577}, {"color": "#55c3a6", "customUrl": "https://pacviewer.com/address/pc1plwavvspj4r4vhy2mj973smysgcxn0q5n8xlzxg", "id": 1785, "label": "pc1plwavvspj4r4vhy2mj973smysgcxn0q5n8xlzxg", "shape": "square", "title": "pc1plwavvspj4r4vhy2mj973smysgcxn0q5n8xlzxg", "x": 2140.5301393708073, "y": -298.6184214933855}, {"color": "#55c3a6", "customUrl": "https://pacviewer.com/address/pc1p8lpeunzzfnjvssle9jdkd78mfx735rz7cmz7ss", "id": 6325, "label": "pc1p8lpeunzzfnjvssle9jdkd78mfx735rz7cmz7ss", "shape": "square", "title": "pc1p8lpeunzzfnjvssle9jdkd78mfx735rz7cmz7ss", "x": -3949.8241819962623, "y": 2492.607989163702}, {"color": "#55c3a6", "customUrl": "https://pacviewer.com/address/pc1pnh4yfzc3gna8lqyc6actar960wwh820unwptkv", "id": 1778, "label": "pc1pnh4yfzc3gna8lqyc6actar960wwh820unwptkv", "shape": "square", "title": "pc1pnh4yfzc3gna8lqyc6actar960wwh820unwptkv", "x": 1291.1093164529404, "y": -4624.58966679612}, {"color": "#55c3a6", "customUrl": "https://pacviewer.com/address/pc1pvxg9uztzrktyrytevnzcv0yfs0xdflxahmq3zc", "id": 1782, "label": "pc1pvxg9uztzrktyrytevnzcv0yfs0xdflxahmq3zc", "shape": "square", "title": "pc1pvxg9uztzrktyrytevnzcv0yfs0xdflxahmq3zc", "x": 3740.337284424124, "y": -2263.8733756431775}, {"color": "#55c3a6", "customUrl": "https://pacviewer.com/address/pc1p9l2mty7jg9h08sc0vg49uwejusga8z5z9f9hw6", "id": 6326, "label": "pc1p9l2mty7jg9h08sc0vg49uwejusga8z5z9f9hw6", "shape": "square", "title": "pc1p9l2mty7jg9h08sc0vg49uwejusga8z5z9f9hw6", "x": -2692.801007582064, "y": 4683.389401941006}, {"color": "#55c3a6", "customUrl": "https://pacviewer.com/address/pc1pwg2d6kdaux6expqq7tnhnfuu2zz7l4gel80gvx", "id": 6328, "label": "pc1pwg2d6kdaux6expqq7tnhnfuu2zz7l4gel80gvx", "shape": "square", "title": "pc1pwg2d6kdaux6expqq7tnhnfuu2zz7l4gel80gvx", "x": -166.30145466977498, "y": 4675.520409753406}]);
+                  edges = new vis.DataSet([{"color": "#55c3a6", "from": 6329, "label": "999.99", "to": 4728, "value": 999.99}, {"color": "#55c3a6", "from": 6327, "label": "999.99", "to": 4728, "value": 999.99}, {"color": "#55c3a6", "from": 4728, "label": "6442.6", "to": 1776, "value": 6442.6}, {"color": "#55c3a6", "from": 4728, "label": "999.99", "to": 6322, "value": 999.99}, {"color": "#55c3a6", "from": 4728, "label": "999.99", "to": 6323, "value": 999.99}, {"color": "#55c3a6", "from": 4728, "label": "435.9", "to": 6325, "value": 435.9}, {"color": "#55c3a6", "from": 4728, "label": "999.99", "to": 6326, "value": 999.99}, {"color": "#55c3a6", "from": 4728, "label": "999.99", "to": 6328, "value": 999.99}, {"color": "#55c3a6", "from": 1776, "label": "1245.01", "to": 1777, "value": 1245.01}, {"color": "#55c3a6", "from": 1776, "label": "1232.42", "to": 1778, "value": 1232.42}, {"color": "#55c3a6", "from": 1776, "label": "1240.83", "to": 1779, "value": 1240.83}, {"color": "#55c3a6", "from": 1776, "label": "1247.11", "to": 1780, "value": 1247.11}, {"color": "#55c3a6", "from": 1776, "label": "1241.5", "to": 1781, "value": 1241.5}, {"color": "#55c3a6", "from": 1776, "label": "1224.02", "to": 1782, "value": 1224.02}, {"color": "#55c3a6", "from": 1776, "label": "1224.71", "to": 1783, "value": 1224.71}, {"color": "#55c3a6", "from": 1776, "label": "1075.6", "to": 1784, "value": 1075.6}, {"color": "#55c3a6", "from": 1776, "label": "63.7", "to": 1785, "value": 63.7}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {"interaction": {"multiselect": true, "selectable": true, "dragView": true, "dragNodes": true, "selectConnectedEdges": true, "hover": true, "hoverConnectedEdges": true}, "physics": {"enabled": false, "stabilization": {"enabled": true, "fit": true}}, "edges": {"smooth": {"type": "continuous"}, "color": {"opacity": 1.0}}, "nodes": {"opacity": 1, "scaling": {"min": 20, "max": 30}, "color": {"background": "#97C2FC", "border": "#2B7CE9", "highlight": {"background": "#D2E5FF", "border": "#2B7CE9"}}}, "configure": {"enabled": false}};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+    network.on("doubleClick", function(params) {
+        if (params.nodes.length > 0) {
+            const nodeId = params.nodes[0];
+            const node = network.body.data.nodes.get(nodeId);
+            if (node.customUrl) {
+                window.open(node.customUrl, '_blank');
+            }
+        }
+    });
+
+    network.on("oncontext", function(params) {
+        params.event.preventDefault();
+        const nodeId = network.getNodeAt(params.pointer.DOM);
+        if (nodeId) {
+            const node = network.body.data.nodes.get(nodeId);
+            if (node.customUrl) {
+                window.open(node.customUrl, '_blank');
+            }
+        }
+    });
+
+    network.on("click", function(params) {
+        if (params.nodes.length > 0) {
+            const nodeId = params.nodes[0];
+            selectNode([nodeId]);
+        } else if (params.nodes.length === 0) {
+            neighbourhoodHighlight({nodes: []});
+        }
+    });
+
+    function selectNodeByAddress() {
+        let address = window.location.hash.substring(1).toLowerCase();
+        if(address) {
+            let nodes = network.body.data.nodes.get();
+            let targetNode = nodes.find(node => 
+                node.title && node.title.toLowerCase() === address
+            );
+            
+            if(targetNode) {
+                network.selectNodes([targetNode.id]);
+                network.focus(targetNode.id, {
+                    scale: 1.0,
+                    animation: true
+                });
+            }
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(selectNodeByAddress, 1000);
+    });
+
+    window.addEventListener('hashchange', function() {
+        selectNodeByAddress();
+    });
+    
+    var style = document.createElement('style');
+    style.textContent = '#select-menu { display: none !important; }';
+    document.head.appendChild(style);
+
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>
